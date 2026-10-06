@@ -3,218 +3,1084 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน - สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด</title>
-    <!-- Google Fonts & Tailwind CSS CDN -->
+    <title>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน - สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด</title>
+    <!-- Prompt Font for Modern Thai Financial UI -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        prompt: ['Prompt', 'sans-serif'],
-                    },
-                    colors: {
-                        coop: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0284c7',
-                            600: '#0369a1',
-                            700: '#075985',
-                            800: '#0c4a6e',
-                            900: '#0a3651',
-                        }
-                    }
-                }
+    
+    <style>
+        :root {
+            --primary-blue: #0056b3;
+            --secondary-blue: #007bff;
+            --dark-blue: #002b5b;
+            --light-blue: #e8f1fd;
+            --accent-blue: #4a90e2;
+            --bg-gray: #f4f7fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #6c757d;
+            --border-color: #dbe2ea;
+            --success-color: #28a745;
+            --warning-color: #ffc107;
+            --danger-color: #dc3545;
+            --radius-lg: 16px;
+            --radius-md: 10px;
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 16px rgba(0, 86, 179, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Prompt', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-gray);
+            color: var(--text-main);
+            line-height: 1.6;
+            padding: 20px 12px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
+
+        .portal-container {
+            width: 100%;
+            max-width: 860px;
+            margin: 0 auto;
+        }
+
+        /* --- Header & Logo Style --- */
+        .header-card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px 20px;
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+            border-top: 5px solid var(--primary-blue);
+        }
+
+        .logo-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 12px;
+            min-height: 70px;
+        }
+
+        .coop-logo {
+            max-height: 75px;
+            max-width: 100%;
+            object-fit: contain;
+        }
+
+        .logo-fallback {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            color: var(--dark-blue);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .logo-fallback-icon {
+            width: 42px;
+            height: 42px;
+            background: var(--primary-blue);
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+        }
+
+        .header-card h1 {
+            color: var(--dark-blue);
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .header-card p.subtitle {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        /* --- Main Form Card --- */
+        .card {
+            background: var(--card-bg);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            box-shadow: var(--shadow-md);
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 86, 179, 0.05);
+        }
+
+        .card-title {
+            color: var(--dark-blue);
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 2px solid var(--light-blue);
+            padding-bottom: 10px;
+        }
+
+        .card-title svg {
+            fill: var(--primary-blue);
+        }
+
+        /* --- Interest Selector (Segmented Control) --- */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-size: 0.95rem;
+        }
+
+        .segmented-control {
+            display: flex;
+            background: #eef3f9;
+            padding: 4px;
+            border-radius: var(--radius-md);
+            gap: 4px;
+        }
+
+        .segmented-control input[type="radio"] {
+            display: none;
+        }
+
+        .segmented-control label {
+            flex: 1;
+            text-align: center;
+            padding: 10px 12px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .segmented-control input[type="radio"]:checked + label {
+            background: var(--primary-blue);
+            color: #ffffff;
+            box-shadow: var(--shadow-sm);
+            font-weight: 600;
+        }
+
+        .rate-badge-info {
+            margin-top: 8px;
+            font-size: 0.85rem;
+            color: var(--primary-blue);
+            background: var(--light-blue);
+            padding: 6px 12px;
+            border-radius: 6px;
+            display: inline-block;
+        }
+
+        /* --- Input Fields --- */
+        .input-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .input-grid {
+                grid-template-columns: 1fr 1fr;
             }
         }
-    </script>
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-wrapper input {
+            width: 100%;
+            padding: 12px 40px 12px 14px;
+            font-size: 1.05rem;
+            font-weight: 500;
+            border: 1.5px solid var(--border-color);
+            border-radius: var(--radius-md);
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            color: var(--text-main);
+            background: #fafbfc;
+        }
+
+        .input-wrapper input:focus {
+            border-color: var(--secondary-blue);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.15);
+            background: #ffffff;
+        }
+
+        .input-suffix {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            pointer-events: none;
+        }
+
+        /* --- Buttons --- */
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 24px;
+        }
+
+        .btn {
+            padding: 14px 20px;
+            border: none;
+            border-radius: var(--radius-md);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-primary {
+            flex: 2;
+            background: linear-gradient(135deg, var(--secondary-blue), var(--primary-blue));
+            color: #ffffff;
+            box-shadow: 0 4px 12px rgba(0, 86, 179, 0.25);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(0, 86, 179, 0.35);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        .btn-secondary {
+            flex: 1;
+            background: #eef2f7;
+            color: var(--text-muted);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+            color: var(--text-main);
+        }
+
+        /* --- Results Area --- */
+        .results-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-hero-card {
+            background: linear-gradient(135deg, var(--dark-blue), var(--primary-blue));
+            color: #ffffff;
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-hero-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+            pointer-events: none;
+        }
+
+        .result-hero-title {
+            font-size: 0.95rem;
+            color: rgba(255, 255, 255, 0.85);
+            font-weight: 400;
+            margin-bottom: 6px;
+        }
+
+        .result-hero-amount {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1.2;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .result-badge {
+            display: inline-block;
+            padding: 4px 14px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 20px;
+            font-size: 0.85rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .details-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        @media (min-width: 600px) {
+            .details-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            padding: 4px 0;
+            border-bottom: 1px dashed #e2e8f0;
+        }
+
+        .detail-item:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: var(--text-muted);
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        /* --- Alert Messages --- */
+        .alert-box {
+            padding: 14px 16px;
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .alert-warning {
+            background: #fff9e6;
+            border: 1px solid #ffe58f;
+            color: #856404;
+        }
+
+        .alert-info {
+            background: #e6f7ff;
+            border: 1px solid #91d5ff;
+            color: #0050b3;
+        }
+
+        /* --- Amortization Table --- */
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            margin-top: 14px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+        }
+
+        .amort-table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: right;
+            font-size: 0.88rem;
+            min-width: 520px;
+        }
+
+        .amort-table th {
+            background: var(--dark-blue);
+            color: #ffffff;
+            padding: 10px 12px;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .amort-table th:first-child,
+        .amort-table td:first-child {
+            text-align: center;
+        }
+
+        .amort-table td {
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .amort-table tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .amort-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .amort-table tr.last-row {
+            background: #eef6ff;
+            font-weight: 600;
+        }
+
+        /* --- Summary Box --- */
+        .summary-cards-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        @media (min-width: 600px) {
+            .summary-cards-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        .summary-mini-card {
+            background: #f8fafc;
+            padding: 12px;
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .summary-mini-card .s-label {
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            margin-bottom: 2px;
+        }
+
+        .summary-mini-card .s-value {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--primary-blue);
+        }
+
+        /* --- Disclaimer Footer --- */
+        .disclaimer-card {
+            background: #ffffff;
+            border-left: 4px solid var(--warning-color);
+            padding: 16px;
+            border-radius: 0 var(--radius-md) var(--radius-md) 0;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            box-shadow: var(--shadow-sm);
+            margin-top: 24px;
+        }
+
+        .disclaimer-card strong {
+            color: var(--text-main);
+        }
+
+        .validation-error {
+            color: var(--danger-color);
+            font-size: 0.8rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .input-error {
+            border-color: var(--danger-color) !important;
+        }
+    </style>
 </head>
-<body class="bg-slate-50 font-prompt min-h-screen flex items-center justify-center p-3 sm:p-6">
+<body>
 
-    <div class="w-full max-w-lg bg-white rounded-3xl shadow-2xl border border-sky-100 overflow-hidden">
-        
-        <!-- Header Banner พร้อมโลโก้สหกรณ์ -->
-        <div class="bg-gradient-to-r from-coop-900 via-coop-700 to-coop-500 p-6 text-white text-center relative">
-            <div class="w-20 h-20 bg-white rounded-full flex items-center justify-center mx-auto mb-3 p-1.5 shadow-md border-2 border-white/80">
-                <!-- โลโก้สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด -->
-                <img src="https://ubonrakcoop.wordpress.com/wp-content/uploads/2026/09/cropped-logo-e0b8aae0b8b5-png.png" 
-                     alt="โลโก้ สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด" 
-                     class="w-full h-full object-contain rounded-full">
-            </div>
-            <h1 class="text-xl sm:text-2xl font-bold tracking-wide">คำนวณวงเงินกู้ฉุกเฉิน</h1>
-            <p class="text-sky-100 text-xs sm:text-sm mt-1 font-light">สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด (ระเบียบ พ.ศ. 2568)</p>
-        </div>
-
-        <!-- Form Body -->
-        <form id="calcForm" onsubmit="calculateCredit(event)" class="p-6 space-y-5">
+<div class="portal-container">
+    
+    <!-- 1. HEADER & LOGO -->
+    <header class="header-card">
+        <div class="logo-container">
+            <img src="https://ubonrakcoop.wordpress.com/wp-content/uploads/2026/09/logo-e0b8aae0b8b5-png.png" 
+                 alt="โลโก้สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด" 
+                 class="coop-logo"
+                 onerror="handleLogoError(this)">
             
-            <!-- 1. รายได้รวม -->
-            <div>
-                <label for="income" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    1. รายได้รวมต่อเดือน (บาท) <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <input type="number" id="income" required min="0" placeholder="เช่น 15000"
-                        class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-coop-500 focus:border-coop-500 outline-none transition font-medium text-slate-800 bg-slate-50 focus:bg-white">
-                    <span class="absolute left-3.5 top-3.5 text-slate-400 font-semibold">฿</span>
-                </div>
-                <p class="text-[11px] text-slate-400 mt-1">* รวมเงินได้ทุกประเภทในใบจ่ายเงินเดือน</p>
+            <div class="logo-fallback" id="logoFallback">
+                <div class="logo-fallback-icon">🏥</div>
+                <div>สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด</div>
             </div>
+        </div>
+        <h1>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน</h1>
+        <p class="subtitle">คำนวณวงเงินกู้ฉุกเฉินเบื้องต้นตามหลักเกณฑ์ของสหกรณ์</p>
+    </header>
 
-            <!-- 2. หุ้นคงเหลือ -->
-            <div>
-                <label for="shares" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    2. มูลค่าหุ้นคงเหลือ (บาท) <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <input type="number" id="shares" required min="0" placeholder="เช่น 50000"
-                        class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-coop-500 focus:border-coop-500 outline-none transition font-medium text-slate-800 bg-slate-50 focus:bg-white">
-                    <span class="absolute left-3.5 top-3.5 text-slate-400 font-semibold">฿</span>
+    <!-- 2. INPUT FORM CARD -->
+    <main class="card">
+        <div class="card-title">
+            <svg width="20" height="20" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 10h2v2H7zm0 4h2v2H7zm4-4h2v2h-2zm0 4h2v2h-2zm4-4h2v2h-2zm0 4h2v2h-2z"/></svg>
+            กรอกข้อมูลเพื่อคำนวณสิทธิ
+        </div>
+
+        <form id="loanForm" onsubmit="event.preventDefault(); processCalculation();">
+            
+            <!-- ประเภทอัตราดอกเบี้ย -->
+            <div class="form-group">
+                <label class="form-label">ประเภทการกู้ / อัตราดอกเบี้ย</label>
+                <div class="segmented-control">
+                    <input type="radio" id="rateNormal" name="interestType" value="NORMAL" checked onchange="updateRateBadge()">
+                    <label for="rateNormal">อัตราปกติ (7.00% ต่อปี)</label>
+                    
+                    <input type="radio" id="rateSpecial" name="interestType" value="SPECIAL" onchange="updateRateBadge()">
+                    <label for="rateSpecial">อัตราพิเศษ (8.00% ต่อปี)</label>
                 </div>
-            </div>
-
-            <!-- 3. หนี้เงินกู้สามัญคงเหลือ -->
-            <div>
-                <label for="ordinaryDebt" class="block text-sm font-semibold text-slate-700 mb-1.5">
-                    3. หนี้เงินกู้สามัญคงเหลือ (บาท) <span class="text-rose-500">*</span>
-                </label>
-                <div class="relative">
-                    <input type="number" id="ordinaryDebt" required min="0" value="0" placeholder="หากไม่มีใส่ 0"
-                        class="w-full pl-10 pr-4 py-3 border border-slate-200 rounded-xl focus:ring-2 focus:ring-coop-500 focus:border-coop-500 outline-none transition font-medium text-slate-800 bg-slate-50 focus:bg-white">
-                    <span class="absolute left-3.5 top-3.5 text-slate-400 font-semibold">฿</span>
+                <div class="rate-badge-info" id="rateBadgeText">
+                    📌 เลือก: อัตราปกติ — ดอกเบี้ย 7.00% ต่อปี (คำนวณสูงสุด 3 เท่าของรายได้)
                 </div>
             </div>
 
-            <!-- 4. ประเภทอัตราวงเงินกู้ -->
-            <div>
-                <label class="block text-sm font-semibold text-slate-700 mb-2">
-                    4. เลือกประเภทการกู้ยืม <span class="text-rose-500">*</span>
-                </label>
-                <div class="grid grid-cols-2 gap-3">
-                    <label class="relative flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition hover:bg-sky-50 has-[:checked]:border-coop-600 has-[:checked]:bg-sky-50/70 border-slate-200">
-                        <input type="radio" name="rateType" value="normal" checked class="sr-only">
-                        <div class="text-center">
-                            <div class="text-xs font-bold text-slate-700">อัตราปกติ</div>
-                            <div class="text-[10px] text-slate-500">สูงสุด 3 เท่าของรายได้</div>
-                        </div>
-                    </label>
-                    <label class="relative flex items-center justify-center p-3 border-2 rounded-xl cursor-pointer transition hover:bg-sky-50 has-[:checked]:border-coop-600 has-[:checked]:bg-sky-50/70 border-slate-200">
-                        <input type="radio" name="rateType" value="special" class="sr-only">
-                        <div class="text-center">
-                            <div class="text-xs font-bold text-coop-700">อัตราพิเศษ (OVER LIMIT)</div>
-                            <div class="text-[10px] text-slate-500">สูงสุด 3.5 เท่าของรายได้</div>
-                        </div>
-                    </label>
+            <!-- Input Fields -->
+            <div class="input-grid">
+                
+                <!-- รายได้รวมต่อเดือน -->
+                <div class="form-group">
+                    <label class="form-label" for="monthlyIncome">รายได้รวมต่อเดือน</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="monthlyIncome" inputmode="decimal" placeholder="0.00" value="0.00" onfocus="clearZero(this)" onblur="formatInputOnBlur(this)">
+                        <span class="input-suffix">บาท</span>
+                    </div>
+                    <div class="validation-error" id="err-monthlyIncome">กรุณากรอกรายได้ให้ถูกต้อง</div>
                 </div>
+
+                <!-- ทุนเรือนหุ้นคงเหลือ -->
+                <div class="form-group">
+                    <label class="form-label" for="shareBalance">ทุนเรือนหุ้นคงเหลือ</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="shareBalance" inputmode="decimal" placeholder="0.00" value="0.00" onfocus="clearZero(this)" onblur="formatInputOnBlur(this)">
+                        <span class="input-suffix">บาท</span>
+                    </div>
+                    <div class="validation-error" id="err-shareBalance">กรุณากรอกทุนเรือนหุ้นให้ถูกต้อง</div>
+                </div>
+
+                <!-- หนี้เงินกู้ทุนเรือนหุ้นคงเหลือ -->
+                <div class="form-group">
+                    <label class="form-label" for="shareLoanDebt">หนี้เงินกู้ทุนเรือนหุ้นคงเหลือ</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="shareLoanDebt" inputmode="decimal" placeholder="0.00" value="0.00" onfocus="clearZero(this)" onblur="formatInputOnBlur(this)">
+                        <span class="input-suffix">บาท</span>
+                    </div>
+                    <div class="validation-error" id="err-shareLoanDebt">กรุณากรอกยอดหนี้ให้ถูกต้อง</div>
+                </div>
+
+                <!-- หนี้เงินกู้สามัญคงเหลือ -->
+                <div class="form-group">
+                    <label class="form-label" for="ordinaryLoanDebt">หนี้เงินกู้สามัญคงเหลือ</label>
+                    <div class="input-wrapper">
+                        <input type="text" id="ordinaryLoanDebt" inputmode="decimal" placeholder="0.00" value="0.00" onfocus="clearZero(this)" onblur="formatInputOnBlur(this)">
+                        <span class="input-suffix">บาท</span>
+                    </div>
+                    <div class="validation-error" id="err-ordinaryLoanDebt">กรุณากรอกยอดหนี้ให้ถูกต้อง</div>
+                </div>
+
             </div>
 
-            <!-- Submit Button -->
-            <button type="submit" 
-                class="w-full bg-gradient-to-r from-coop-600 to-coop-700 hover:from-coop-700 hover:to-coop-800 text-white font-semibold py-3.5 rounded-xl shadow-lg shadow-coop-600/30 active:scale-[0.99] transition duration-200 flex items-center justify-center gap-2">
-                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 0 1 2-2V5a2 2 0 0 1-2-2H7a2 2 0 0 1-2 2v14a2 2 0 0 1 2 2z"></path>
-                </svg>
-                คำนวณวงเงินที่กู้ได้
-            </button>
+            <!-- Action Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-secondary" onclick="resetForm()">ล้างข้อมูล</button>
+                <button type="submit" class="btn btn-primary">คำนวณวงเงินที่กู้ได้</button>
+            </div>
+
         </form>
+    </main>
 
-        <!-- Result Box -->
-        <div id="resultCard" class="hidden p-6 bg-coop-50 border-t border-sky-100">
-            <div class="text-center">
-                <span class="text-xs font-bold uppercase tracking-wider text-coop-600">ประมาณการวงเงินกู้ฉุกเฉินสูงสุด</span>
-                <div id="maxCreditDisplay" class="text-3xl sm:text-4xl font-extrabold text-coop-900 my-1">
-                    0 <span class="text-base font-normal text-slate-600">บาท</span>
-                </div>
-                <p id="ruleNote" class="text-xs text-coop-700 mt-1 font-medium"></p>
-            </div>
-
-            <!-- Estimation Breakdown Table (12 งวด) -->
-            <div id="repaymentDetail" class="mt-4 pt-4 border-t border-sky-200/60 hidden">
-                <div class="flex justify-between items-center mb-2">
-                    <span class="text-xs font-semibold text-slate-700">ประมาณการผ่อนชำระ (เงินรวมเท่ากัน 12 งวด)</span>
-                    <span class="text-xs font-bold text-coop-700" id="monthlyPayDisplay">0 บาท/เดือน</span>
-                </div>
-            </div>
-
-            <!-- Disclaimer -->
-            <div class="mt-4 p-3 bg-amber-50/80 border border-amber-200 rounded-xl text-[11px] text-amber-800 leading-relaxed flex items-start gap-2">
-                <span class="text-amber-500 font-bold text-sm">⚠️</span>
-                <div>
-                    <strong>หมายเหตุ:</strong> ผลการคำนวณนี้เป็นการประมาณการเบื้องต้นตามระเบียบ พ.ศ. 2568 วงเงินอนุมัติจริงจะขึ้นอยู่กับหลักเกณฑ์ การตรวจสอบเอกสาร และมติการพิจารณาของสหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด
-                </div>
-            </div>
+    <!-- 3. RESULTS AREA -->
+    <section class="results-section" id="resultsSection">
+        
+        <!-- Hero Card (วงเงินที่กู้ได้) -->
+        <div class="result-hero-card">
+            <div class="result-hero-title">วงเงินที่กู้ได้โดยประมาณ</div>
+            <div class="result-hero-amount" id="displayMaxLoan">฿ 0</div>
+            <div class="result-badge" id="displayRuleCase">ตามหลักเกณฑ์สหกรณ์</div>
         </div>
 
-        <div class="bg-slate-100 p-3 text-center text-[11px] text-slate-400">
-            Member Portal Service • สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด
+        <!-- Alert Notification Box -->
+        <div class="alert-box alert-info" id="statusAlertBox">
+            <div id="alertIcon">ℹ️</div>
+            <div id="alertMessage">ผ่านเกณฑ์การพิจารณาเบื้องต้นตามระเบียบสหกรณ์</div>
         </div>
-    </div>
 
-    <!-- JavaScript Business Logic -->
-    <script>
-        function calculateCredit(e) {
-            e.preventDefault();
+        <!-- Result Details Card -->
+        <div class="card">
+            <div class="card-title">
+                <svg width="20" height="20" viewBox="0 0 24 24"><path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/></svg>
+                สรุปข้อมูลและเงื่อนไขการคำนวณ
+            </div>
 
-            const income = parseFloat(document.getElementById('income').value) || 0;
-            const shares = parseFloat(document.getElementById('shares').value) || 0;
-            const ordinaryDebt = parseFloat(document.getElementById('ordinaryDebt').value) || 0;
-            const rateType = document.querySelector('input[name="rateType"]:checked').value;
+            <div class="details-grid">
+                <div class="detail-item">
+                    <span class="detail-label">ประเภทอัตราดอกเบี้ย:</span>
+                    <span class="detail-value" id="resInterestType">อัตราปกติ</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">อัตราดอกเบี้ย:</span>
+                    <span class="detail-value" id="resInterestRate">7.00% ต่อปี</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">รายได้ต่อเดือน:</span>
+                    <span class="detail-value" id="resMonthlyIncome">0.00 บาท</span>
+                </div>
+                <div class="detail-item">
+                    <span class="detail-label">ทุนเรือนหุ้นคงเหลือ:</span>
+                    <span class="detail-value" id="resShareBalance">0.00 บาท</span>
+                </div>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <span class="detail-label">หลักเกณฑ์ที่ใช้คำนวณ:</span>
+                    <span class="detail-value" id="resRuleApplied" style="color: var(--primary-blue);">—</span>
+                </div>
+                <div class="detail-item" style="grid-column: 1 / -1;">
+                    <span class="detail-label">วงเงินกู้ที่คำนวณได้ก่อนปัดเศษ:</span>
+                    <span class="detail-value" id="resExactLimit">0.00 บาท</span>
+                </div>
+            </div>
 
-            let maxLoan = 0;
-            let note = "";
+            <!-- 4. AMORTIZATION TABLE & SUMMARY -->
+            <div id="amortizationContainer">
+                <div class="card-title" style="margin-top: 10px;">
+                    <svg width="20" height="20" viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14zM7 7h10v2H7zm0 4h10v2H7zm0 4h7v2H7z"/></svg>
+                    ตารางประมาณการผ่อนชำระ (ลดต้นลดดอก)
+                </div>
 
-            // กรณีไม่มีสัญญาเงินกู้สามัญ
-            if (ordinaryDebt <= 0) {
-                const optionA = 20000;
-                const optionB = shares * 0.10; // ร้อยละ 10 ของหุ้น
-                maxLoan = Math.max(optionA, optionB);
-                note = "เงื่อนไข: สมาชิกไม่มีสัญญาเงินกู้สามัญ (ให้วงเงินไม่เกิน 20,000 บาท หรือ 10% ของหุ้น)";
-            } 
-            // กรณีมีสัญญาเงินกู้สามัญ
-            else {
-                let multiplier = (rateType === 'special') ? 3.5 : 3.0;
+                <div class="table-responsive">
+                    <table class="amort-table">
+                        <thead>
+                            <tr>
+                                <th>งวดที่</th>
+                                <th>เงินต้นคงเหลือยกมา</th>
+                                <th>ชำระดอกเบี้ย</th>
+                                <th>ชำระเงินต้น</th>
+                                <th>ยอดชำระรวม</th>
+                                <th>เงินต้นคงเหลือสิ้นงวด</th>
+                            </tr>
+                        </thead>
+                        <tbody id="amortTableBody">
+                            <!-- Javascript Generates Rows Here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- สรุปการผ่อน -->
+                <div class="summary-cards-grid">
+                    <div class="summary-mini-card">
+                        <div class="s-label">เงินต้นกู้</div>
+                        <div class="s-value" id="sumPrincipal">0 บาท</div>
+                    </div>
+                    <div class="summary-mini-card">
+                        <div class="s-label">ดอกเบี้ยรวมโดยประมาณ</div>
+                        <div class="s-value" id="sumInterest">0 บาท</div>
+                    </div>
+                    <div class="summary-mini-card">
+                        <div class="s-label">ยอดชำระรวมโดยประมาณ</div>
+                        <div class="s-value" id="sumTotal">0 บาท</div>
+                    </div>
+                    <div class="summary-mini-card">
+                        <div class="s-label">จำนวนงวดผ่อนจริง</div>
+                        <div class="s-value" id="sumTenure">0 งวด</div>
+                    </div>
+                    <div class="summary-mini-card">
+                        <div class="s-label">ชำระงวดปกติ (เต็มสิบ)</div>
+                        <div class="s-value" id="sumNormalPayment">0 บาท</div>
+                    </div>
+                    <div class="summary-mini-card">
+                        <div class="s-label">ชำระงวดสุดท้าย</div>
+                        <div class="s-value" id="sumLastPayment" style="color: var(--success-color);">0 บาท</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </section>
+
+    <!-- 5. DISCLAIMER FOOTER -->
+    <footer class="disclaimer-card">
+        <strong>หมายเหตุ:</strong>
+        ผลการคำนวณนี้เป็นเพียงการประมาณการเบื้องต้น วงเงินจริงและสิทธิในการกู้ขึ้นอยู่กับหลักเกณฑ์ ข้อบังคับ ระเบียบ ประกาศ และการตรวจสอบข้อมูลจริงของสหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด <br>
+        <span style="color: var(--danger-color); font-weight: 500;">* โปรแกรมนี้ไม่ถือเป็นการอนุมัติสินเชื่อ</span>
+    </footer>
+
+</div>
+
+<!-- JavaScript Engine -->
+<script>
+    /**
+     * LOGO ERROR FALLBACK HANDLER
+     */
+    function handleLogoError(imgElement) {
+        imgElement.style.display = 'none';
+        document.getElementById('logoFallback').style.display = 'flex';
+    }
+
+    /**
+     * UPDATE UI ON INTEREST TYPE CHANGE
+     */
+    function updateRateBadge() {
+        const isSpecial = document.getElementById('rateSpecial').checked;
+        const badge = document.getElementById('rateBadgeText');
+        if (isSpecial) {
+            badge.innerHTML = "📌 เลือก: อัตราพิเศษ (Over Limit) — ดอกเบี้ย 8.00% ต่อปี (คำนวณสูงสุด 3.5 เท่าของรายได้)";
+            badge.style.background = "#fff3cd";
+            badge.style.color = "#856404";
+        } else {
+            badge.innerHTML = "📌 เลือก: อัตราปกติ — ดอกเบี้ย 7.00% ต่อปี (คำนวณสูงสุด 3 เท่าของรายได้)";
+            badge.style.background = "var(--light-blue)";
+            badge.style.color = "var(--primary-blue)";
+        }
+    }
+
+    /**
+     * FORMATTING UTILITIES
+     */
+    function parseNumber(value) {
+        if (!value) return 0;
+        const cleaned = value.toString().replace(/,/g, '').trim();
+        const num = parseFloat(cleaned);
+        return isNaN(num) ? 0 : num;
+    }
+
+    function formatCurrency(num, decimals = 2) {
+        return num.toLocaleString('th-TH', {
+            minimumFractionDigits: decimals,
+            maximumFractionDigits: decimals
+        });
+    }
+
+    function formatIntegerCurrency(num) {
+        return Math.round(num).toLocaleString('th-TH');
+    }
+
+    function clearZero(input) {
+        if (parseNumber(input.value) === 0) {
+            input.value = '';
+        } else {
+            input.value = input.value.replace(/,/g, '');
+        }
+    }
+
+    function formatInputOnBlur(input) {
+        const val = parseNumber(input.value);
+        if (val < 0) {
+            input.value = "0.00";
+        } else {
+            input.value = formatCurrency(val, 2);
+        }
+    }
+
+    /**
+     * FORM VALIDATION
+     */
+    function validateForm() {
+        let isValid = true;
+        const fields = ['monthlyIncome', 'shareBalance', 'shareLoanDebt', 'ordinaryLoanDebt'];
+        
+        fields.forEach(fieldId => {
+            const input = document.getElementById(fieldId);
+            const errDiv = document.getElementById(`err-${fieldId}`);
+            const val = parseNumber(input.value);
+
+            if (val < 0 || isNaN(val)) {
+                input.classList.add('input-error');
+                errDiv.style.display = 'block';
+                isValid = false;
+            } else {
+                input.classList.remove('input-error');
+                errDiv.style.display = 'none';
+            }
+        });
+
+        return isValid;
+    }
+
+    /**
+     * RESET FORM
+     */
+    function resetForm() {
+        document.getElementById('loanForm').reset();
+        document.getElementById('rateNormal').checked = true;
+        updateRateBadge();
+        
+        ['monthlyIncome', 'shareBalance', 'shareLoanDebt', 'ordinaryLoanDebt'].forEach(id => {
+            const input = document.getElementById(id);
+            input.value = "0.00";
+            input.classList.remove('input-error');
+            document.getElementById(`err-${id}`).style.display = 'none';
+        });
+
+        document.getElementById('resultsSection').style.display = 'none';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * CORE CALCULATION ENGINE
+     */
+    function processCalculation() {
+        if (!validateForm()) return;
+
+        // 1. Fetch Input Values
+        const income = parseNumber(document.getElementById('monthlyIncome').value);
+        const share = parseNumber(document.getElementById('shareBalance').value);
+        const shareDebt = parseNumber(document.getElementById('shareLoanDebt').value);
+        const ordinaryDebt = parseNumber(document.getElementById('ordinaryLoanDebt').value);
+        const isSpecialRate = document.getElementById('rateSpecial').checked;
+
+        const interestRateYear = isSpecialRate ? 8.00 : 7.00;
+        const interestTypeName = isSpecialRate ? "อัตราพิเศษ (Over Limit)" : "อัตราปกติ";
+
+        let calculatedLimit = 0;
+        let ruleDescription = "";
+        let isEligible = true;
+        let statusMessage = "ผ่านเกณฑ์การพิจารณาเบื้องต้นตามระเบียบสหกรณ์";
+        let alertType = "info";
+
+        // 2. Determine Case based on Rules
+        
+        // --- CASE 1: ไม่มีหนี้สามัญ & ไม่มีหนี้หุ้น ---
+        if (ordinaryDebt === 0 && shareDebt === 0) {
+            const tenPercentShare = share * 0.10;
+            calculatedLimit = Math.max(20000, tenPercentShare);
+            
+            // ไม่เกินมูลค่าหุ้นที่มี
+            calculatedLimit = Math.min(calculatedLimit, share);
+            ruleDescription = "กรณีไม่มีสัญญาเงินกู้สามัญ: วงเงินไม่เกิน 20,000 บาท หรือไม่เกิน 10% ของทุนเรือนหุ้น (แล้วแต่จำนวนใดมากกว่า) และไม่เกินมูลค่าหุ้นคงเหลือ";
+        }
+        
+        // --- CASE 2: ไม่มีหนี้สามัญ แต่มีหนี้กู้หุ้น ---
+        else if (ordinaryDebt === 0 && shareDebt > 0) {
+            // เงื่อนไข: วงเงิน > 20,000 แต่ไม่เกิน 40,000 บาท และต้องมีหุ้นไม่น้อยกว่า 50% ของวงเงินกู้
+            // นั่นคือ วงเงินกู้ต้องไม่เกิน 2 เท่าของทุนเรือนหุ้น (Share / Loan >= 0.5 => Loan <= Share * 2)
+            const maxCap = 40000;
+            const maxByShareRule = share * 2; // หุ้น 50% ของวงเงิน
+
+            calculatedLimit = Math.min(maxCap, maxByShareRule);
+
+            ruleDescription = "กรณีมีหนี้กู้หุ้นแต่ไม่มีหนี้สามัญ: วงเงินสูงสุดไม่เกิน 40,000 บาท และต้องมีทุนเรือนหุ้นไม่น้อยกว่า 50% ของวงเงินกู้";
+
+            if (share < 10000) { // หากหุ้นน้อยเกินไปจนไม่ถึงเกณฑ์
+                statusMessage = "เงื่อนไขกรณีมีหนี้กู้หุ้น: ทุนเรือนหุ้นคงเหลือต้องไม่น้อยกว่า 50% ของวงเงินกู้ที่ขออนุมัติ";
+            }
+        }
+
+        // --- CASE 3: มีสัญญาเงินกู้สามัญ ---
+        else if (ordinaryDebt > 0) {
+            if (!isSpecialRate) {
+                // 3.1 อัตราปกติ (7%)
+                const baseMultiple = income * 3;
                 let capByIncome = 0;
 
                 if (income <= 10000) {
-                    capByIncome = (rateType === 'special') ? 35000 : 25000;
+                    capByIncome = 25000;
                 } else if (income <= 15000) {
-                    capByIncome = (rateType === 'special') ? 50000 : 40000;
+                    capByIncome = 40000;
                 } else {
-                    capByIncome = (rateType === 'special') ? 60000 : 50000;
+                    capByIncome = 50000;
                 }
 
-                // สมาชิกที่มีสัญญาเงินกู้สามัญ วงเงินกู้ต้องไม่เกินมูลค่าหุ้นที่มี
-                const calculatedLoan = income * multiplier;
-                maxLoan = Math.min(calculatedLoan, capByIncome, shares);
-                note = `เงื่อนไข: สมาชิกมีเงินกู้สามัญ (${rateType === 'special' ? 'อัตราพิเศษ 3.5 เท่า' : 'อัตราปกติ 3 เท่า'} ไม่เกินเพดานรายได้ และไม่เกินมูลค่าหุ้น)`;
-            }
-
-            // ปัดเศษให้เป็นจำนวนเต็มสิบ
-            maxLoan = Math.floor(maxLoan / 10) * 10;
-
-            // แสดงผลลัพธ์
-            document.getElementById('maxCreditDisplay').innerHTML = `${maxLoan.toLocaleString('th-TH')} <span class="text-base font-normal text-slate-600">บาท</span>`;
-            document.getElementById('ruleNote').innerText = note;
-
-            // คำนวณประมาณการผ่อนชำระ แบบเงินรวมเท่ากัน 12 งวด (อัตราดอกเบี้ยประมาณการ 6.5% ต่อปี)
-            if (maxLoan > 0) {
-                const months = 12;
-                const annualInterestRate = 0.065; // อัตราดอกเบี้ยสมมติ 6.5%
-                const monthlyRate = annualInterestRate / 12;
-                
-                // สูตร Amortization คำนวณเงินรวมเท่ากัน
-                let pmnt = (maxLoan * monthlyRate * Math.pow(1 + monthlyRate, months)) / (Math.pow(1 + monthlyRate, months) - 1);
-                pmnt = Math.ceil(pmnt / 10) * 10; // ปัดเป็นจำนวนเต็มสิบ
-
-                document.getElementById('monthlyPayDisplay').innerText = `ประมาณ ${pmnt.toLocaleString('th-TH')} บาท/เดือน`;
-                document.getElementById('repaymentDetail').classList.remove('hidden');
+                calculatedLimit = Math.min(baseMultiple, capByIncome, share);
+                ruleDescription = `กรณีมีหนี้กู้สามัญ (อัตราปกติ 7.00%): คำนวณ 3 เท่าของรายได้ (สูงสุดไม่เกิน ${formatIntegerCurrency(capByIncome)} บาท ตามช่วงรายได้) และไม่เกินมูลค่าหุ้นคงเหลือ`;
             } else {
-                document.getElementById('repaymentDetail').classList.add('hidden');
+                // 3.2 อัตราพิเศษ (8%)
+                const baseMultiple = income * 3.5;
+                let capByIncome = 0;
+
+                if (income <= 10000) {
+                    capByIncome = 35000;
+                } else if (income <= 15000) {
+                    capByIncome = 50000;
+                } else {
+                    capByIncome = 60000;
+                }
+
+                calculatedLimit = Math.min(baseMultiple, capByIncome, share);
+                ruleDescription = `กรณีมีหนี้กู้สามัญ (อัตราพิเศษ 8.00%): คำนวณ 3.5 เท่าของรายได้ (สูงสุดไม่เกิน ${formatIntegerCurrency(capByIncome)} บาท ตามช่วงรายได้) และไม่เกินมูลค่าหุ้นคงเหลือ`;
+            }
+        }
+
+        // ป้องกันวงเงินติดลบ
+        if (calculatedLimit < 0) calculatedLimit = 0;
+
+        // 3. ปัดเศษลงเป็นหลักสิบ (Floor to Nearest Ten)
+        const finalApprovedLimit = Math.floor(calculatedLimit / 10) * 10;
+
+        if (finalApprovedLimit <= 0) {
+            isEligible = false;
+            statusMessage = "ข้อมูลเบื้องต้นไม่เข้าเกณฑ์การคำนวณวงเงินกู้ หรือวงเงินที่คำนวณได้เป็น 0 บาท กรุณาติดต่อสหกรณ์เพื่อตรวจสอบสิทธิ";
+            alertType = "warning";
+        }
+
+        // 4. Update UI - Overview Data
+        document.getElementById('displayMaxLoan').innerText = `฿ ${formatIntegerCurrency(finalApprovedLimit)}`;
+        document.getElementById('resInterestType').innerText = interestTypeName;
+        document.getElementById('resInterestRate').innerText = `${interestRateYear.toFixed(2)}% ต่อปี`;
+        document.getElementById('resMonthlyIncome').innerText = `${formatCurrency(income)} บาท`;
+        document.getElementById('resShareBalance').innerText = `${formatCurrency(share)} บาท`;
+        document.getElementById('resRuleApplied').innerText = ruleDescription;
+        document.getElementById('resExactLimit').innerText = `${formatCurrency(calculatedLimit)} บาท`;
+
+        // Update Alert Box
+        const alertBox = document.getElementById('statusAlertBox');
+        const alertMsg = document.getElementById('alertMessage');
+        const alertIcon = document.getElementById('alertIcon');
+
+        if (alertType === "warning") {
+            alertBox.className = "alert-box alert-warning";
+            alertIcon.innerText = "⚠️";
+        } else {
+            alertBox.className = "alert-box alert-info";
+            alertIcon.innerText = "ℹ️";
+        }
+        alertMsg.innerText = statusMessage;
+
+        // 5. Generate Amortization Schedule if Eligible
+        const amortContainer = document.getElementById('amortizationContainer');
+        if (isEligible && finalApprovedLimit > 0) {
+            amortContainer.style.display = 'block';
+            generateAmortizationSchedule(finalApprovedLimit, interestRateYear, 12);
+        } else {
+            amortContainer.style.display = 'none';
+        }
+
+        // Show Results Section
+        const resultsSection = document.getElementById('resultsSection');
+        resultsSection.style.display = 'block';
+        resultsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    /**
+     * AMORTIZATION SCHEDULE GENERATOR
+     * Reducing Balance Rate (ลดต้นลดดอก)
+     * Target: 12 งวด, งวดปกติเต็มสิบ, งวดสุดท้ายน้อยที่สุด & เงินต้นคงเหลือ = 0
+     */
+    function generateAmortizationSchedule(principal, annualRate, maxMonths = 12) {
+        const monthlyRate = (annualRate / 100) / 12;
+        
+        // 1. คำนวณค่างวดมาตรฐาน (Standard PMT Formula)
+        const pmtExact = (principal * monthlyRate * Math.pow(1 + monthlyRate, maxMonths)) / 
+                         (Math.pow(1 + monthlyRate, maxMonths) - 1);
+
+        // 2. ปัดขึ้นเป็นเต็มสิบสำหรับงวดปกติ เพื่อการันตีว่าตัดหมดใน 12 งวด และทำให้งวดสุดท้ายน้อยที่สุด
+        let normalPayment = Math.ceil(pmtExact / 10) * 10;
+
+        let balance = principal;
+        let schedule = [];
+        let totalInterest = 0;
+        let totalPaid = 0;
+
+        for (let month = 1; month <= maxMonths; month++) {
+            if (balance <= 0) break;
+
+            let interest = balance * monthlyRate;
+            let currentPayment = normalPayment;
+            let principalPaid = currentPayment - interest;
+
+            // ตรวจสอบว่างวดนี้เป็นงวดสุดท้ายหรือไม่ (เมื่อเงินต้นเหลือ + ดอกเบี้ย <= ค่างวดปกติ)
+            if (month === maxMonths || (balance + interest) <= normalPayment) {
+                // บังคับจัดการงวดสุดท้าย
+                interest = balance * monthlyRate; // ดอกเบี้ยของเงินต้นคงเหลือจริง
+                currentPayment = balance + interest; // ยอดชำระงวดสุดท้าย = ต้นคงเหลือ + ดอกเบี้ย
+                principalPaid = balance;
+                balance = 0; // ปิดยอดหนี้สมบูรณ์
+            } else {
+                balance = balance - principalPaid;
             }
 
-            document.getElementById('resultCard').classList.remove('hidden');
+            // ป้องกัน Floating point precision error
+            if (balance < 0.01) balance = 0;
+
+            totalInterest += interest;
+            totalPaid += currentPayment;
+
+            schedule.push({
+                month: month,
+                startBalance: balance + principalPaid,
+                interest: interest,
+                principalPaid: principalPaid,
+                payment: currentPayment,
+                endBalance: balance
+            });
+
+            if (balance === 0) break;
         }
-    </script>
+
+        // 3. Render Table Rows
+        const tbody = document.getElementById('amortTableBody');
+        tbody.innerHTML = '';
+
+        schedule.forEach(row => {
+            const tr = document.createElement('tr');
+            if (row.month === schedule.length) {
+                tr.classList.add('last-row');
+            }
+
+            tr.innerHTML = `
+                <td>${row.month}</td>
+                <td>${formatCurrency(row.startBalance)}</td>
+                <td>${formatCurrency(row.interest)}</td>
+                <td>${formatCurrency(row.principalPaid)}</td>
+                <td style="font-weight: 600; color: var(--primary-blue);">${formatIntegerCurrency(row.payment)}</td>
+                <td>${formatCurrency(row.endBalance)}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+
+        // 4. Update Summary Cards
+        const lastRow = schedule[schedule.length - 1];
+        document.getElementById('sumPrincipal').innerText = `${formatIntegerCurrency(principal)} บาท`;
+        document.getElementById('sumInterest').innerText = `${formatCurrency(totalInterest)} บาท`;
+        document.getElementById('sumTotal').innerText = `${formatCurrency(totalPaid)} บาท`;
+        document.getElementById('sumTenure').innerText = `${schedule.length} งวด`;
+        document.getElementById('sumNormalPayment').innerText = `${formatIntegerCurrency(normalPayment)} บาท`;
+        document.getElementById('sumLastPayment').innerText = `${formatIntegerCurrency(lastRow.payment)} บาท`;
+    }
+
+    // Initialize Event Listeners
+    document.addEventListener('DOMContentLoaded', () => {
+        updateRateBadge();
+        
+        // Allow Enter key to submit calculation
+        document.getElementById('loanForm').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                processCalculation();
+            }
+        });
+    });
+</script>
+
 </body>
 </html>
