@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน - สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด</title>
+    <title>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน - สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด</title>
     <!-- Prompt Font for Modern Thai Financial UI -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -529,13 +529,13 @@
     <header class="header-card">
         <div class="logo-container">
             <img src="https://ubonrakcoop.wordpress.com/wp-content/uploads/2026/09/logo-e0b8aae0b8b5-png.png" 
-                 alt="โลโก้สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด" 
+                 alt="โลโก้สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด" 
                  class="coop-logo"
                  onerror="handleLogoError(this)">
             
             <div class="logo-fallback" id="logoFallback">
                 <div class="logo-fallback-icon">🏥</div>
-                <div>สหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด</div>
+                <div>สหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด</div>
             </div>
         </div>
         <h1>โปรแกรมคำนวณวงเงินกู้ฉุกเฉิน</h1>
@@ -731,7 +731,7 @@
     <!-- 5. DISCLAIMER FOOTER -->
     <footer class="disclaimer-card">
         <strong>หมายเหตุ:</strong>
-        ผลการคำนวณนี้เป็นเพียงการประมาณการเบื้องต้น วงเงินจริงและสิทธิในการกู้ขึ้นอยู่กับหลักเกณฑ์ ข้อบังคับ ระเบียบ ประกาศ และการตรวจสอบข้อมูลจริงของสหกรณ์ออมทรัพย์โรงพยาบาลอุบลรักษ์ ธนบุรี จำกัด <br>
+        ผลการคำนวณนี้เป็นเพียงการประมาณการเบื้องต้น วงเงินจริงและสิทธิในการกู้ขึ้นอยู่กับหลักเกณฑ์ ข้อบังคับ ระเบียบ ประกาศ และการตรวจสอบข้อมูลจริงของสหกรณ์ออมทรัพย์อุบลรักษ์ ธนบุรี จำกัด <br>
         <span style="color: var(--danger-color); font-weight: 500;">* โปรแกรมนี้ไม่ถือเป็นการอนุมัติสินเชื่อ</span>
     </footer>
 
@@ -875,10 +875,7 @@
             const tenPercentShare = share * 0.10;
             calculatedLimit = Math.max(20000, tenPercentShare);
             
-            // ไม่เกินมูลค่าหุ้นที่มี
-            calculatedLimit = Math.min(calculatedLimit, share);
-            ruleDescription = "กรณีไม่มีสัญญาเงินกู้สามัญ: วงเงินไม่เกิน 20,000 บาท หรือไม่เกิน 10% ของทุนเรือนหุ้น (แล้วแต่จำนวนใดมากกว่า) และไม่เกินมูลค่าหุ้นคงเหลือ";
-        }
+            }
         
         // --- CASE 2: ไม่มีหนี้สามัญ แต่มีหนี้กู้หุ้น ---
         else if (ordinaryDebt === 0 && shareDebt > 0) {
