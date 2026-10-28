@@ -803,6 +803,33 @@
     }
 
     /**
+     * ENTER KEY NAVIGATION: moves to the next field (top-to-bottom, left-to-right); submits at the last field
+     */
+    function handleEnterKey(event) {
+        if (event.key !== 'Enter' || event.isComposing) return;
+        if (!(event.target instanceof HTMLInputElement)) return;
+        event.preventDefault();
+
+        const form = document.getElementById('loanForm');
+        const target = event.target;
+        const current = target.type === 'radio'
+            ? form.querySelector(`input[name="${target.name}"]`)
+            : target;
+
+        const fields = Array.from(form.querySelectorAll('input')).filter(
+            el => el.type !== 'radio' || el === form.querySelector(`input[name="${el.name}"]`)
+        );
+        const next = fields[fields.indexOf(current) + 1];
+
+        if (next) {
+            next.focus();
+            if (next.type === 'text') next.select();
+        } else {
+            form.requestSubmit();
+        }
+    }
+
+    /**
      * FORM VALIDATION
      */
     function validateForm() {
@@ -1068,14 +1095,7 @@
     // Initialize Event Listeners
     document.addEventListener('DOMContentLoaded', () => {
         updateRateBadge();
-        
-        // Allow Enter key to submit calculation
-        document.getElementById('loanForm').addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                processCalculation();
-            }
-        });
+        document.getElementById('loanForm').addEventListener('keydown', handleEnterKey);
     });
 </script>
 
